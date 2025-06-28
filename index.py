@@ -23,10 +23,10 @@ font = pygame.font.SysFont(None, 36)
 
 
 clock = pygame.time.Clock()
-FPS = 10
+
 
 # exibir fonte
-def Placa(text, color, x, y):
+def exibir_texto(text, color, x, y):
     txt = font.render(text, True, color)
     screen.blit(txt, (x, y))
 
@@ -47,10 +47,12 @@ def game_loop():
     direction = [CELL_SIZE, 0]
     fruit = random_position()
     pontos = 0
+    Velocidade = 6
 
     running = True
     while running:
-        clock.tick(FPS)
+        print('Velocidade: ', Velocidade, 'pontos: ', pontos)
+        clock.tick(Velocidade)
         #Manipuilador de eventos do teclado
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -78,6 +80,15 @@ def game_loop():
             fruit = random_position()
         else:
             snake.pop()
+        
+        if(pontos >= 5 and pontos <10):
+            Velocidade = 7
+        elif(pontos >= 10 and pontos < 20):
+            Velocidade = 10
+        elif(pontos >= 20 and pontos < 30):
+            Velocidade = 12
+        elif(pontos >= 30):
+            Velocidade = 18
 
         # Colisões com as paredes ou com a cobra mesmo
         if (
@@ -87,19 +98,22 @@ def game_loop():
         ):
             game_over(pontos)
             return
+        
+       
 
         # crio toda interface
         screen.fill(BLACK)
         snake_exibir(snake)
         pygame.draw.rect(screen, RED, (*fruit, CELL_SIZE, CELL_SIZE))
-        Placa(f"pontos: {pontos}", WHITE, 10, 10)
+        exibir_texto(f"pontos: {pontos}", WHITE, 10, 10)
         pygame.display.flip()
 
 def game_over(pontos):
     screen.fill(BLACK)
-    Placa("GAME OVER", RED, WIDTH // 2 - 100, HEIGHT // 2 - 50)
-    Placa(f"Pontuação: {pontos}", WHITE, WIDTH // 2 - 90, HEIGHT // 2)
-    Placa("Pressione ESPAÇO para jogar novamente", WHITE, WIDTH // 2 - 190, HEIGHT // 2 + 50)
+    exibir_texto("GAME OVER", RED, WIDTH // 2 - 100, HEIGHT // 2 - 50)
+    exibir_texto(f"Pontuação: {pontos}", WHITE, WIDTH // 2 - 90, HEIGHT // 2)
+    exibir_texto("Pressione ESPAÇO para jogar novamente", WHITE, WIDTH // 2 - 190, HEIGHT // 2 + 50)
+    exibir_texto("Pressione ESC para sair", WHITE, WIDTH // 2 - 190, HEIGHT // 2 + 100)
     pygame.display.flip()   
 
     while True:
@@ -109,6 +123,33 @@ def game_over(pontos):
                 sys.exit()
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 game_loop()
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                pygame.quit()
+                sys.exit()
+                   
 
 
-game_loop()
+def main_menu():
+    while True:
+        screen.fill(BLACK)
+        logo = pygame.image.load("snake_turbo.png")
+        logo = pygame.transform.scale(logo, (400, 200))
+        screen.blit(logo, (WIDTH // 2 - 200, HEIGHT // 2 -230))
+        exibir_texto("=> Pressione ESPAÇO para Jogar", WHITE, WIDTH // 2 - 180, HEIGHT // 2 - 20)
+        exibir_texto("=> Pressione ESC para Sair", WHITE, WIDTH // 2 - 160, HEIGHT // 2 + 30)
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    game_loop()
+                elif event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+
+
+# game_loop()
+main_menu()
