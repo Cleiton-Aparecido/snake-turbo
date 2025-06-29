@@ -1,3 +1,4 @@
+import os
 import pygame
 import random
 import sys
@@ -17,6 +18,8 @@ WIDTH, HEIGHT = 600, 400
 CELL_SIZE = 20
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Snake Turbo - Início")
+imagem_fruta = pygame.image.load("fruta.png") 
+imagem_fruta = pygame.transform.scale(imagem_fruta, (20, 25))
 
 # Fonte do jogo
 font = pygame.font.SysFont(None, 36)
@@ -43,6 +46,10 @@ def random_position():
 
 # Game loop
 def game_loop():
+    caminho_musica = os.path.join(os.getcwd(), 'musica', 'musica_jogo.mp3')
+    pygame.mixer.music.load(caminho_musica)
+    pygame.mixer.music.set_volume(0.2) 
+    pygame.mixer.music.play(-1) 
     snake = [[100, 100]]
     direction = [CELL_SIZE, 0]
     fruit = random_position()
@@ -102,15 +109,19 @@ def game_loop():
        
 
         # crio toda interface
-        screen.fill(BLACK)
+        screen.fill("#090b0a")
         snake_exibir(snake)
-        pygame.draw.rect(screen, RED, (*fruit, CELL_SIZE, CELL_SIZE))
+        screen.blit(imagem_fruta, fruit)
         exibir_texto(f"pontos: {pontos}", WHITE, 10, 10)
         pygame.display.flip()
 
 def game_over(pontos):
+    musica_menu()
     screen.fill(BLACK)
-    exibir_texto("GAME OVER", RED, WIDTH // 2 - 100, HEIGHT // 2 - 50)
+    logo = pygame.image.load("snake_turbo.png")
+    logo = pygame.transform.scale(logo, (400, 200))
+    screen.blit(logo, (WIDTH // 2 - 200, HEIGHT // 2 -230))
+    exibir_texto("GAME OVER", RED, WIDTH // 2 - 100, HEIGHT // 2 - 70)
     exibir_texto(f"Pontuação: {pontos}", WHITE, WIDTH // 2 - 90, HEIGHT // 2)
     exibir_texto("Pressione ESPAÇO para jogar novamente", WHITE, WIDTH // 2 - 190, HEIGHT // 2 + 50)
     exibir_texto("Pressione ESC para sair", WHITE, WIDTH // 2 - 190, HEIGHT // 2 + 100)
@@ -127,11 +138,17 @@ def game_over(pontos):
                 pygame.quit()
                 sys.exit()
                    
-
+def musica_menu():
+    caminho_musica = os.path.join(os.getcwd(), 'musica', 'menu_eletro.mp3')
+    pygame.mixer.music.load(caminho_musica)
+    pygame.mixer.music.set_volume(0.2) 
+    pygame.mixer.music.play() 
 
 def main_menu():
+    musica_menu()
+    
     while True:
-        screen.fill(BLACK)
+        screen.fill("#090b0a")
         logo = pygame.image.load("snake_turbo.png")
         logo = pygame.transform.scale(logo, (400, 200))
         screen.blit(logo, (WIDTH // 2 - 200, HEIGHT // 2 -230))
