@@ -21,12 +21,15 @@ pygame.display.set_caption("Snake Turbo - Início")
 imagem_fruta = pygame.image.load("fruta.png") 
 imagem_fruta = pygame.transform.scale(imagem_fruta, (20, 25))
 
+SNAKE_SIZE = 40
+
 # Fonte do jogo
 font = pygame.font.SysFont(None, 36)
 
 
 clock = pygame.time.Clock()
-
+head_image = pygame.image.load("snake_head.png")
+body_image = pygame.image.load("snake_body.png")
 
 # exibir fonte
 def exibir_texto(text, color, x, y):
@@ -34,9 +37,31 @@ def exibir_texto(text, color, x, y):
     screen.blit(txt, (x, y))
 
 #exibir a snake
-def snake_exibir(snake):
-    for block in snake:
-        pygame.draw.rect(screen, DARK_GREEN, (*block, CELL_SIZE, CELL_SIZE))
+def snake_exibir(snake, direction):
+    # Carrega as imagens
+    head_image_original = pygame.image.load("snake_head.png")
+    body_image = pygame.image.load("snake_body.png")
+
+    # Redimensiona
+    head_image_original = pygame.transform.scale(head_image_original, (SNAKE_SIZE, SNAKE_SIZE))
+    body_image = pygame.transform.scale(body_image, (SNAKE_SIZE, SNAKE_SIZE))
+
+    # Rotaciona a cabeça com base na direção
+    if direction == [CELL_SIZE, 0]:         # Direita
+        head_image = head_image_original
+    elif direction == [-CELL_SIZE, 0]:      # Esquerda
+        head_image = pygame.transform.rotate(head_image_original, 180)
+    elif direction == [0, -CELL_SIZE]:      # Cima
+        head_image = pygame.transform.rotate(head_image_original, 90)
+    elif direction == [0, CELL_SIZE]:       # Baixo
+        head_image = pygame.transform.rotate(head_image_original, -90)
+
+    for index, block in enumerate(snake):
+        if index == 0:
+            screen.blit(head_image, block)  # Cabeça
+        else:
+            screen.blit(body_image, block)  # Corpo
+
 
 # gerar uma posição aleatória para a fruta
 def random_position():
@@ -110,7 +135,9 @@ def game_loop():
 
         # crio toda interface
         screen.fill("#090b0a")
-        snake_exibir(snake)
+        # snake_exibir(snake)
+        snake_exibir(snake, direction)
+
         screen.blit(imagem_fruta, fruit)
         exibir_texto(f"pontos: {pontos}", WHITE, 10, 10)
         pygame.display.flip()
