@@ -18,15 +18,19 @@ WIDTH, HEIGHT = 600, 400
 CELL_SIZE = 20
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Snake Turbo - Início")
-imagem_fruta = pygame.image.load("fruta.png") 
-imagem_fruta = pygame.transform.scale(imagem_fruta, (20, 25))
+caminho_imagem_fruta = os.path.join(os.getcwd(), 'image', 'fruta.png')
+imagem_fruta = pygame.image.load(caminho_imagem_fruta) 
+imagem_fruta = pygame.transform.scale(imagem_fruta, (20, 20))
+
+SNAKE_SIZE = 40
 
 # Fonte do jogo
 font = pygame.font.SysFont(None, 36)
 
 
 clock = pygame.time.Clock()
-
+# head_image = pygame.image.load("snake_head.png")
+# body_image = pygame.image.load("snake_corpo.png")
 
 # exibir fonte
 def exibir_texto(text, color, x, y):
@@ -34,9 +38,31 @@ def exibir_texto(text, color, x, y):
     screen.blit(txt, (x, y))
 
 #exibir a snake
-def snake_exibir(snake):
-    for block in snake:
-        pygame.draw.rect(screen, DARK_GREEN, (*block, CELL_SIZE, CELL_SIZE))
+caminho_HEAD_IMG = os.path.join(os.getcwd(), 'image', 'snake_head.png')
+HEAD_IMG = pygame.image.load(caminho_HEAD_IMG)
+HEAD_IMG = pygame.transform.scale(HEAD_IMG, (CELL_SIZE, CELL_SIZE))
+
+caminho_BODY_IMG = os.path.join(os.getcwd(), 'image', 'snake_corpo.png')
+BODY_IMG = pygame.image.load(caminho_BODY_IMG)
+BODY_IMG = pygame.transform.scale(BODY_IMG, (CELL_SIZE, CELL_SIZE))
+def snake_exibir(snake, direction):
+    for i, pos in enumerate(snake):
+        if i == 0:
+            head_img = HEAD_IMG
+            if direction == [CELL_SIZE, 0]:
+                head_img = pygame.transform.rotate(HEAD_IMG, 0)
+            elif direction == [-CELL_SIZE, 0]:
+                head_img = pygame.transform.flip(HEAD_IMG, True, False)
+            elif direction == [0, -CELL_SIZE]:
+                head_img = pygame.transform.rotate(HEAD_IMG, 90)
+            elif direction == [0, CELL_SIZE]:
+                head_img = pygame.transform.rotate(HEAD_IMG, -90)
+            screen.blit(head_img, pos)
+        else:
+            screen.blit(BODY_IMG, pos)
+
+
+
 
 # gerar uma posição aleatória para a fruta
 def random_position():
@@ -58,7 +84,7 @@ def game_loop():
 
     running = True
     while running:
-        print('Velocidade: ', Velocidade, 'pontos: ', pontos)
+        # print('Velocidade: ', Velocidade, 'pontos: ', pontos)
         clock.tick(Velocidade)
         #Manipuilador de eventos do teclado
         for event in pygame.event.get():
@@ -73,6 +99,7 @@ def game_loop():
                     direction = [0, CELL_SIZE]
                 elif (event.key == pygame.K_LEFT or event.key == pygame.K_a) and direction[0] == 0:
                     direction = [-CELL_SIZE, 0]
+                    
                 elif (event.key == pygame.K_RIGHT or event.key == pygame.K_d) and direction[0] == 0:
                     direction = [CELL_SIZE, 0]
 
@@ -110,7 +137,9 @@ def game_loop():
 
         # crio toda interface
         screen.fill("#090b0a")
-        snake_exibir(snake)
+        # snake_exibir(snake)
+        snake_exibir(snake, direction)
+
         screen.blit(imagem_fruta, fruit)
         exibir_texto(f"pontos: {pontos}", WHITE, 10, 10)
         pygame.display.flip()
@@ -118,7 +147,8 @@ def game_loop():
 def game_over(pontos):
     musica_menu()
     screen.fill(BLACK)
-    logo = pygame.image.load("snake_turbo.png")
+    caminho_logo = os.path.join(os.getcwd(), 'image', 'snake_turbo.png')
+    logo = pygame.image.load(caminho_logo)
     logo = pygame.transform.scale(logo, (400, 200))
     screen.blit(logo, (WIDTH // 2 - 200, HEIGHT // 2 -230))
     exibir_texto("GAME OVER", RED, WIDTH // 2 - 100, HEIGHT // 2 - 70)
@@ -149,7 +179,8 @@ def main_menu():
     
     while True:
         screen.fill("#090b0a")
-        logo = pygame.image.load("snake_turbo.png")
+        caminho_logo = os.path.join(os.getcwd(), 'image', 'snake_turbo.png')
+        logo = pygame.image.load(caminho_logo)
         logo = pygame.transform.scale(logo, (400, 200))
         screen.blit(logo, (WIDTH // 2 - 200, HEIGHT // 2 -230))
         exibir_texto("=> Pressione ESPAÇO para Jogar", WHITE, WIDTH // 2 - 180, HEIGHT // 2 - 20)
