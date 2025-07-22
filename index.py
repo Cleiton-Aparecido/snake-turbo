@@ -109,6 +109,8 @@ def game_loop():
         snake.insert(0, head)
 
         # comeu a fruta
+        print(fruit)
+        print(head)
         if head == fruit:
             pontos += 1
             fruit = random_position()
