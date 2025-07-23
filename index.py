@@ -37,6 +37,8 @@ BODY_IMG      = carregar_imagem('image', 'snake_corpo.png', (CELL_SIZE, CELL_SIZ
 TAIL_IMG      = carregar_imagem('image', 'snake_rabo.png', (CELL_SIZE, CELL_SIZE))
 MENU_LOGO     = carregar_imagem('image', 'snake_turbo.png', (400, 200))
 BACKGROUND_IMG= carregar_imagem('image', 'background.png', (WIDTH, HEIGHT))
+CURVE_IMG = carregar_imagem('image', 'snake_corpo_virada.png', (CELL_SIZE, CELL_SIZE))
+
 
 # Fonte e clock
 font = pygame.font.SysFont(None, 36)
@@ -120,12 +122,55 @@ def snake_exibir(snake, direction, open_mouth):
             else: rot = pygame.transform.rotate(TAIL_IMG,-90)
             screen.blit(rot, pos)
         else:
-            prev = snake[idx-1]; dx = prev[0]-pos[0]; dy = prev[1]-pos[1]
-            if dx==CELL_SIZE and dy==0: rot = BODY_IMG
-            elif dx==-CELL_SIZE and dy==0: rot = pygame.transform.flip(BODY_IMG,True,False)
-            elif dx==0 and dy==-CELL_SIZE: rot = pygame.transform.rotate(BODY_IMG,90)
-            else: rot = pygame.transform.rotate(BODY_IMG,-90)
+            prev = snake[idx-1]
+            nex  = snake[idx+1]
+            dx1, dy1 = prev[0]-pos[0], prev[1]-pos[1]
+            dx2, dy2 = nex[0]-pos[0], nex[1]-pos[1]
+            
+            # checa se é curva: um vetor horizontal e outro vertical
+            if (dx1 != 0 and dy1 == 0 and dx2 == 0 and dy2 != 0) or \
+               (dx1 == 0 and dy1 != 0 and dx2 != 0 and dy2 == 0):
+                # decide a rotação do CURVE_IMG
+                print(f"dx1: {dx1}, dy1: {dy1}, dx2: {dx2}, dy2: {dy2}")
+                print(f"CELL_SIZE: {CELL_SIZE}")
+                print("=====================")
+                # dx1: 20, dy1: 0, dx2: 0, dy2: 20
+                # CELL_SIZE: 20
+
+                if dx1 == CELL_SIZE and dy2 == CELL_SIZE or dx2 == CELL_SIZE and dy1 == CELL_SIZE:
+                    rot = pygame.transform.rotate(CURVE_IMG,   90)   # curva ↙ ↘
+                    print("cima para esquerda")
+                elif dx1 == CELL_SIZE and dy2 == -CELL_SIZE or dx2 == CELL_SIZE and dy1 == -CELL_SIZE:
+                    # rot = pygame.transform.rotate(CURVE_IMG,  180)   # curva ↖
+                    rot = pygame.transform.flip(CURVE_IMG, True, True)
+
+                    print("cima para direita")
+                elif dx1 == -CELL_SIZE and dy2 == CELL_SIZE or dx2 == -CELL_SIZE and dy1 == CELL_SIZE:
+                    print("esquerda para baixo")
+                    rot = pygame.transform.rotate(CURVE_IMG, 0)   # curva ↘ 
+                else:
+                    rot = pygame.transform.rotate(CURVE_IMG, 270)   # curva ↗
+                    print("direita para baixa")
+            else:
+                # segmento reto (como antes)
+                if dx1 == CELL_SIZE and dy1 == 0:
+                    rot = BODY_IMG
+                elif dx1 == -CELL_SIZE and dy1 == 0:
+                    rot = pygame.transform.flip(BODY_IMG, True, False)
+                elif dx1 == 0 and dy1 == -CELL_SIZE:
+                    rot = pygame.transform.rotate(BODY_IMG, 90)
+                else:
+                    rot = pygame.transform.rotate(BODY_IMG, -90)
+
             screen.blit(rot, pos)
+
+
+            # prev = snake[idx-1]; dx = prev[0]-pos[0]; dy = prev[1]-pos[1]
+            # if dx==CELL_SIZE and dy==0: rot = BODY_IMG
+            # elif dx==-CELL_SIZE and dy==0: rot = pygame.transform.flip(BODY_IMG,True,False)
+            # elif dx==0 and dy==-CELL_SIZE: rot = pygame.transform.rotate(BODY_IMG,90)
+            # else: rot = pygame.transform.rotate(BODY_IMG,-90)
+            # screen.blit(rot, pos)
 
 # Game loop
 def game_loop(player_name):

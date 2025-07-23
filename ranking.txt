@@ -1,0 +1,10 @@
+cleiton,14
+C,14
+C,7
+C,5
+C,4
+c,3
+C,3
+c,2
+cleiton,1
+c,1
