@@ -158,9 +158,19 @@ def random_position():
 # Loop de jogo
 def game_loop(player_name):
     pygame.mixer.music.stop()
-    pygame.mixer.music.load(os.path.join(caminho_base, 'musica','musica_jogo.mp3'))
+    # música inicial
+    music_path = os.path.join(caminho_base, 'musica','musica_jogo.mp3')
+    # configura mixer padrão e toca música
+    pygame.mixer.pre_init(44100, -16, 2)
+    pygame.mixer.init()
+    pygame.mixer.music.load(music_path)
     pygame.mixer.music.set_volume(0.2)
     pygame.mixer.music.play(-1)
+    # armazena frequência base para ajuste de velocidade de música
+    base_freq, _, _ = pygame.mixer.get_init()
+    last_music_level = 0
+
+    # inicia com cabeça, corpo e rabo
 
     # inicia com cabeça, corpo e rabo
     snake = [[100,100], [100-CELL_SIZE,100], [100-2*CELL_SIZE,100]]
@@ -208,6 +218,13 @@ def game_loop(player_name):
 
 # Tela de game over
 def game_over_screen(last_score):
+    # toca música do menu novamente
+    pygame.mixer.music.stop()
+    menu_music = os.path.join(caminho_base, 'musica', 'menu_eletro.mp3')
+    pygame.mixer.music.load(menu_music)
+    pygame.mixer.music.set_volume(0.2)
+    pygame.mixer.music.play(-1)
+    score = last_score
     score = last_score
     while True:
         screen.fill(BLACK)
@@ -231,6 +248,12 @@ def game_over_screen(last_score):
 
 # Menu principal
 def main():
+    # Toca música do menu
+    pygame.mixer.music.stop()
+    menu_music = os.path.join(caminho_base, 'musica', 'menu_eletro.mp3')
+    pygame.mixer.music.load(menu_music)
+    pygame.mixer.music.set_volume(0.2)
+    pygame.mixer.music.play(-1)
     player = input_name()
     while True:
         screen.fill(BLACK)
