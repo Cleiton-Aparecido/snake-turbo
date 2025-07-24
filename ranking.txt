@@ -1,10 +1,10 @@
+cleiton,35
+s,23
+cleiton,16
+cleiton,16
 cleiton,14
 C,14
+cleiton,13
+cleiton,12
 C,7
-C,5
-C,4
-c,3
-C,3
-c,2
-cleiton,1
-c,1
+s,7

@@ -3,7 +3,6 @@ import pygame
 import random
 import sys
 
-# Configurações iniciais
 game_title = "Snake Turbo"
 pygame.init()
 
@@ -103,7 +102,7 @@ def random_position():
     y = random.randint(0, (HEIGHT - CELL_SIZE)//CELL_SIZE) * CELL_SIZE
     return [x, y]
 
-# Exibe snake
+# Exibe cobrinha
 
 def snake_exibir(snake, direction, open_mouth):
     for idx, pos in enumerate(snake):
@@ -130,10 +129,7 @@ def snake_exibir(snake, direction, open_mouth):
             # checa se é curva: um vetor horizontal e outro vertical
             if (dx1 != 0 and dy1 == 0 and dx2 == 0 and dy2 != 0) or \
                (dx1 == 0 and dy1 != 0 and dx2 != 0 and dy2 == 0):
-                # decide a rotação do CURVE_IMG
-                print(f"dx1: {dx1}, dy1: {dy1}, dx2: {dx2}, dy2: {dy2}")
-                print(f"CELL_SIZE: {CELL_SIZE}")
-                print("=====================")
+
                 # dx1: 20, dy1: 0, dx2: 0, dy2: 20
                 # CELL_SIZE: 20
 
@@ -182,6 +178,7 @@ def game_loop(player_name):
 
     snake = [[100,100], [80,100], [60,100]]
     direction = [CELL_SIZE,0]
+    next_direction = direction[:] 
     fruit = random_position()
     score=0; initial_speed=6
 
@@ -192,10 +189,11 @@ def game_loop(player_name):
             if event.type==pygame.QUIT: pygame.quit(); sys.exit()
             elif event.type==pygame.KEYDOWN:
                 if event.key==pygame.K_ESCAPE: pygame.quit(); sys.exit()
-                if event.key in (pygame.K_UP,pygame.K_w) and direction[1]==0: direction=[0,-CELL_SIZE]
-                elif event.key in (pygame.K_DOWN,pygame.K_s) and direction[1]==0: direction=[0,CELL_SIZE]
-                elif event.key in (pygame.K_LEFT,pygame.K_a) and direction[0]==0: direction=[-CELL_SIZE,0]
-                elif event.key in (pygame.K_RIGHT,pygame.K_d) and direction[0]==0: direction=[CELL_SIZE,0]
+                if event.key in (pygame.K_UP,pygame.K_w) and direction[1]==0: next_direction =[0,-CELL_SIZE]
+                elif event.key in (pygame.K_DOWN,pygame.K_s) and direction[1]==0: next_direction =[0,CELL_SIZE]
+                elif event.key in (pygame.K_LEFT,pygame.K_a) and direction[0]==0: next_direction =[-CELL_SIZE,0]
+                elif event.key in (pygame.K_RIGHT,pygame.K_d) and direction[0]==0: next_direction =[CELL_SIZE,0]
+        direction = next_direction
         head=[snake[0][0]+direction[0],snake[0][1]+direction[1]]
         snake.insert(0,head)
         if head==fruit:
